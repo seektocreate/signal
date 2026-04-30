@@ -3,9 +3,9 @@ import type { Database } from "@/lib/db/types";
 import { scrapeListTweets } from "@/lib/scrapers/apify";
 import { SIGNAL_HANDLES } from "@/lib/sources/handles";
 
-// 600 across 15 handles ≈ 40/handle for a 24h window. The wrapper runs the
+// 1000 across ~52 handles ≈ 19/handle for a 24h window. The wrapper runs the
 // actor once per handle and divides maxItems evenly.
-const MAX_ITEMS = 600;
+const MAX_ITEMS = 1000;
 const COST_PER_1K = 0.25;
 
 // Local Supabase client. lib/db/client.ts uses `server-only`, which throws when
