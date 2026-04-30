@@ -76,6 +76,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       themes: {
         Row: {
@@ -111,6 +112,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       agent_runs: {
         Row: {
@@ -170,6 +172,7 @@ export type Database = {
           completed_at?: string | null;
           error?: string | null;
         };
+        Relationships: [];
       };
       tweets: {
         Row: {
@@ -223,6 +226,7 @@ export type Database = {
           scout_model?: string | null;
           scout_run_id?: string | null;
         };
+        Relationships: [];
       };
       theme_citations: {
         Row: {
@@ -246,6 +250,7 @@ export type Database = {
           position?: number;
           role?: CitationRole;
         };
+        Relationships: [];
       };
       eval_scores: {
         Row: {
@@ -278,6 +283,7 @@ export type Database = {
           agent_run_id?: string;
           created_at?: string;
         };
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
