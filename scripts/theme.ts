@@ -7,7 +7,11 @@ import type { Database, DigestStatus, Json } from "@/lib/db/types";
 const MODEL = "claude-sonnet-4-6";
 const MAX_TOKENS = 4096;
 const COST_CEILING_CENTS = 100;
-const ALLOWED_START_STATUSES: DigestStatus[] = ["filtering", "theming"];
+// Statuses we'll pick up:
+// - 'filtering' = Scout just finished, normal run
+// - 'theming'   = previous Theme run crashed mid-flight, re-running
+// - 'failed'    = previous Theme run failed cleanly, retrying
+const ALLOWED_START_STATUSES: DigestStatus[] = ["filtering", "theming", "failed"];
 
 // Cents per token. Source: https://docs.anthropic.com/en/docs/about-claude/pricing
 // Sonnet 4.6: $3.00/MTok input, $15.00/MTok output, $3.75/MTok 5m cache write,
