@@ -43,7 +43,7 @@ type Tokens = {
 type ThemeOutput = {
   title: string;
   summary: string;
-  tweet_ids: string[];
+  tweet_ids: (string | number)[];
   position: number;
 };
 
@@ -86,7 +86,7 @@ function parseThemeOutput(text: string): unknown {
   );
 }
 
-function validateThemes(parsed: unknown, keptIds: Set<string>): ThemeOutput[] {
+function validateThemes(parsed: unknown, validIndices: Set<number>): ThemeOutput[] {
   if (!parsed || typeof parsed !== "object") {
     throw new Error("output is not a JSON object");
   }
@@ -99,7 +99,8 @@ function validateThemes(parsed: unknown, keptIds: Set<string>): ThemeOutput[] {
   }
 
   const themes: ThemeOutput[] = [];
-  const seenIds = new Set<string>();
+  const seenIds = new Set<number>();
+  const N = validIndices.size;
 
   for (const t of themesField) {
     if (!t || typeof t !== "object") {
@@ -120,18 +121,23 @@ function validateThemes(parsed: unknown, keptIds: Set<string>): ThemeOutput[] {
       throw new Error("theme.tweet_ids must be a non-empty array");
     }
 
-    const tweetIds: string[] = [];
+    const tweetIds: (string | number)[] = [];
     for (const id of tt.tweet_ids) {
-      if (typeof id !== "string") {
-        throw new Error("theme.tweet_ids entries must be strings");
+      const idx =
+        typeof id === "number"
+          ? id
+          : typeof id === "string"
+            ? parseInt(id, 10)
+            : NaN;
+      if (!Number.isInteger(idx) || !validIndices.has(idx)) {
+        throw new Error(
+          `invalid tweet_id ${JSON.stringify(id)}: expected integer in [1, ${N}]`,
+        );
       }
-      if (!keptIds.has(id)) {
-        throw new Error(`hallucinated tweet_id not in kept set: ${id}`);
+      if (seenIds.has(idx)) {
+        throw new Error(`tweet_id appears in multiple themes: ${idx}`);
       }
-      if (seenIds.has(id)) {
-        throw new Error(`tweet_id appears in multiple themes: ${id}`);
-      }
-      seenIds.add(id);
+      seenIds.add(idx);
       tweetIds.push(id);
     }
 
@@ -214,11 +220,15 @@ async function main() {
       throw new Error("no kept tweets found — nothing to theme");
     }
 
-    const tweetPayload = tweets.map((t) => ({
-      id: t.id,
-      author: `@${t.author_handle}`,
+    const tweetPayload = tweets.map((t, i) => ({
+      id: i + 1,
+      author: t.author_handle,
       text: t.text,
     }));
+
+    const indexToUuid = new Map<number, string>(
+      tweets.map((t, i) => [i + 1, t.id]),
+    );
     inputJson = { tweets: tweetPayload } as unknown as Json;
 
     const userMessage =
@@ -259,8 +269,10 @@ async function main() {
     }
 
     const parsed = parseThemeOutput(rawText);
-    const keptIds = new Set(tweets.map((t) => t.id));
-    const themes = validateThemes(parsed, keptIds);
+    const validIndices = new Set<number>(
+      Array.from({ length: tweets.length }, (_, i) => i + 1),
+    );
+    const themes = validateThemes(parsed, validIndices);
 
     for (const theme of themes) {
       const { data: themeRow, error: insErr } = await supabase
@@ -277,11 +289,14 @@ async function main() {
         throw new Error(`themes insert failed: ${insErr?.message ?? "no row returned"}`);
       }
 
-      const citations = theme.tweet_ids.map((tweet_id, idx) => ({
-        theme_id: themeRow.id,
-        tweet_id,
-        position: idx + 1,
-      }));
+      const citations = theme.tweet_ids.map((tid, i) => {
+        const idx = typeof tid === "string" ? parseInt(tid, 10) : tid;
+        return {
+          theme_id: themeRow.id,
+          tweet_id: indexToUuid.get(idx)!,
+          position: i + 1,
+        };
+      });
       const { error: citErr } = await supabase.from("theme_citations").insert(citations);
       if (citErr) throw new Error(`theme_citations insert failed: ${citErr.message}`);
     }

@@ -28,7 +28,7 @@ Return a single JSON object with this exact shape:
     {
       "title": "...",
       "summary": "...",
-      "tweet_ids": ["...", "..."],
+      "tweet_ids": [1, 2, 3],
       "position": 1
     }
   ]
@@ -39,7 +39,7 @@ Return a single JSON object with this exact shape:
 
 - `title`: 4-10 words, sentence case, narrative not categorical. Should communicate the angle, not just the topic. Good: "Capability parity arrives, and policy starts improvising." Bad: "AI model news."
 - `summary`: 2-4 sentences in the voice of a sharp editor who's read every tweet. Name the through-line, not a list of what happened. The reader should finish the summary knowing why this story mattered today.
-- `tweet_ids`: the IDs of every tweet that belongs in this theme. A tweet belongs to exactly one theme — no duplicates. Not every tweet has to make a theme; if something is signal but doesn't fit a storyline, leave it out.
+- `tweet_ids`: the integer IDs of every tweet that belongs in this theme, copied exactly from the input. The input gives each tweet a numeric `id` (1, 2, 3, ...). Use those numbers — do not invent or modify them. A tweet belongs to exactly one theme — no duplicates. Not every tweet has to make a theme; if something is signal but doesn't fit a storyline, leave it out.
 - `position`: 1 for the lead theme, 2 for the second, etc. Order themes by editorial importance, not chronology. The most consequential storyline of the day leads.
 
 **Theme count:** Aim for 3 themes on a typical day. Use 2 when one story so dominates that everything else is noise around it. Use 4 only when there are genuinely four distinct, important storylines competing for attention. Never fewer than 2, never more than 4. If you find yourself wanting 5, you're clustering categorically — go back and find the real through-lines.
