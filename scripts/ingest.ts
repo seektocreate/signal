@@ -11,6 +11,10 @@ const MAX_ITEMS = 1000;
 const COST_PER_1K = 0.25;
 const WINDOW_HOURS = 72;
 const CROSS_DIGEST_LOOKBACK_DAYS = 7;
+// >50% per-handle failure suggests a systemic problem (Apify outage, auth, etc.)
+// rather than a few flaky handles; abort instead of publishing on sparse data.
+const FAILURE_ABORT_RATIO = 0.5;
+const FAILED_HANDLES_LOG_THRESHOLD = 5;
 
 // Local Supabase client. lib/db/client.ts uses `server-only`, which throws when
 // imported in plain Node — so the CLI script creates its own.
@@ -56,9 +60,10 @@ async function main() {
     });
     const scraped = result.tweets.length;
 
-    if (result.failedHandles.length === SIGNAL_HANDLES.length) {
+    const failedCount = result.failedHandles.length;
+    if (failedCount > SIGNAL_HANDLES.length * FAILURE_ABORT_RATIO) {
       throw new Error(
-        `all ${SIGNAL_HANDLES.length} handles failed against kaitoeasyapi/twitter-x-data-tweet-scraper-pay-per-result-cheapest`,
+        `${failedCount}/${SIGNAL_HANDLES.length} handles failed (>${FAILURE_ABORT_RATIO * 100}%) — aborting before publishing on sparse data`,
       );
     }
 
@@ -108,14 +113,14 @@ async function main() {
     if (pendingErr) throw new Error(`digest pending update failed: ${pendingErr.message}`);
 
     console.log(
-      `[ingest] scraped=${scraped}, within-day-dupes=${withinDayDupes}, cross-digest-dupes=${crossDigestDupes}, inserted=${inserted}`,
+      `[ingest] scraped=${scraped}, within-day-dupes=${withinDayDupes}, cross-digest-dupes=${crossDigestDupes}, inserted=${inserted}, failed-handles=${failedCount}`,
     );
     console.log(
       `[ingest] sample handles: ${sampleHandles.map((h) => `@${h}`).join(", ") || "(none)"}`,
     );
-    if (result.failedHandles.length > 0) {
+    if (failedCount >= FAILED_HANDLES_LOG_THRESHOLD) {
       const list = result.failedHandles.map((f) => `@${f.handle}`).join(", ");
-      console.log(`[ingest] failed handles (${result.failedHandles.length}): ${list}`);
+      console.log(`[ingest] failed handles: ${list}`);
     }
     console.log(`[ingest] elapsed=${elapsedMs}ms`);
     console.log(

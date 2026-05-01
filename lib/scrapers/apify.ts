@@ -126,14 +126,19 @@ export async function scrapeListTweets({
 
   const tweets: ScrapedTweet[] = [];
   const failedHandles: { handle: string; error: string }[] = [];
+  const total = handles.length;
 
-  for (const handle of handles) {
+  for (let i = 0; i < total; i++) {
+    const handle = handles[i];
+    const idx = `(${i + 1}/${total})`;
+    console.log(`[apify] @${handle} scraping... ${idx}`);
     try {
       const handleTweets = await scrapeOneHandle({ token, handle, perHandle, sinceTime });
       tweets.push(...handleTweets);
+      console.log(`[apify] @${handle} done — got ${handleTweets.length} tweets ${idx}`);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      console.error(`[apify] handle @${handle} failed: ${message}`);
+      console.error(`[apify] @${handle} failed: ${message} ${idx}`);
       failedHandles.push({ handle, error: message });
     }
   }
