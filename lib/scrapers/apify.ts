@@ -70,10 +70,12 @@ async function scrapeOneHandle({
   token,
   handle,
   perHandle,
+  sinceTime,
 }: {
   token: string;
   handle: string;
   perHandle: number;
+  sinceTime: number;
 }): Promise<ScrapedTweet[]> {
   const res = await fetch(`${API_BASE}/acts/${ACTOR}/run-sync-get-dataset-items`, {
     method: "POST",
@@ -85,6 +87,7 @@ async function scrapeOneHandle({
       from: handle,
       maxItems: perHandle,
       queryType: "Latest",
+      since_time: String(sinceTime),
     }),
   });
 
@@ -110,9 +113,11 @@ async function scrapeOneHandle({
 export async function scrapeListTweets({
   handles,
   maxItems,
+  sinceTime,
 }: {
   handles: readonly string[];
   maxItems: number;
+  sinceTime: number;
 }): Promise<ScrapeResult> {
   const token = requireEnv("APIFY_API_TOKEN");
   if (handles.length === 0) throw new Error("scrapeListTweets: handles must be non-empty");
@@ -124,7 +129,7 @@ export async function scrapeListTweets({
 
   for (const handle of handles) {
     try {
-      const handleTweets = await scrapeOneHandle({ token, handle, perHandle });
+      const handleTweets = await scrapeOneHandle({ token, handle, perHandle, sinceTime });
       tweets.push(...handleTweets);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);

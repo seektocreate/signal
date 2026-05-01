@@ -4,10 +4,13 @@ import { scrapeListTweets } from "@/lib/scrapers/apify";
 import { SIGNAL_HANDLES } from "@/lib/sources/handles";
 import { todayInPT } from "@/lib/util/date";
 
-// 1000 across ~52 handles ≈ 19/handle for a 24h window. The wrapper runs the
-// actor once per handle and divides maxItems evenly.
+// 1000 across ~52 handles ≈ 19/handle for a 72h window. The wrapper runs the
+// actor once per handle and divides maxItems evenly. Some handles may post
+// >19 times in 72h; the date filter trims rather than the per-handle cap.
 const MAX_ITEMS = 1000;
 const COST_PER_1K = 0.25;
+const WINDOW_HOURS = 72;
+const CROSS_DIGEST_LOOKBACK_DAYS = 7;
 
 // Local Supabase client. lib/db/client.ts uses `server-only`, which throws when
 // imported in plain Node — so the CLI script creates its own.
@@ -45,7 +48,12 @@ async function main() {
   if (statusErr) throw new Error(`digest status reset failed: ${statusErr.message}`);
 
   try {
-    const result = await scrapeListTweets({ handles: SIGNAL_HANDLES, maxItems: MAX_ITEMS });
+    const sinceTime = Math.floor((Date.now() - WINDOW_HOURS * 3600 * 1000) / 1000);
+    const result = await scrapeListTweets({
+      handles: SIGNAL_HANDLES,
+      maxItems: MAX_ITEMS,
+      sinceTime,
+    });
     const scraped = result.tweets.length;
 
     if (result.failedHandles.length === SIGNAL_HANDLES.length) {
@@ -54,9 +62,27 @@ async function main() {
       );
     }
 
+    // Cross-digest dedup: tweets kept in any digest within the lookback window
+    // should not reappear in today's. The 72h scrape window overlaps the prior
+    // 1–2 days, so without this the same tweet could be published twice.
+    const lookbackDate = new Date();
+    lookbackDate.setUTCDate(lookbackDate.getUTCDate() - CROSS_DIGEST_LOOKBACK_DAYS);
+    const lookbackStr = lookbackDate.toISOString().slice(0, 10);
+    const { data: priorRows, error: priorErr } = await supabase
+      .from("tweets")
+      .select("x_tweet_id")
+      .gte("digest_date", lookbackStr)
+      .eq("kept", true)
+      .not("x_tweet_id", "is", null);
+    if (priorErr) throw new Error(`prior-tweet lookup failed: ${priorErr.message}`);
+    const priorIds = new Set((priorRows ?? []).map((r) => r.x_tweet_id));
+
+    const freshTweets = result.tweets.filter((t) => !priorIds.has(t.x_tweet_id));
+    const crossDigestDupes = scraped - freshTweets.length;
+
     let inserted = 0;
-    if (scraped > 0) {
-      const rows = result.tweets.map((t) => ({ digest_date: today, ...t }));
+    if (freshTweets.length > 0) {
+      const rows = freshTweets.map((t) => ({ digest_date: today, ...t }));
       const { data, error } = await supabase
         .from("tweets")
         .upsert(rows, {
@@ -68,7 +94,7 @@ async function main() {
       inserted = data?.length ?? 0;
     }
 
-    const skipped = scraped - inserted;
+    const withinDayDupes = freshTweets.length - inserted;
     const sampleHandles = Array.from(
       new Set(result.tweets.map((t) => t.author_handle)),
     ).slice(0, 5);
@@ -81,7 +107,9 @@ async function main() {
       .eq("date", today);
     if (pendingErr) throw new Error(`digest pending update failed: ${pendingErr.message}`);
 
-    console.log(`[ingest] scraped=${scraped} inserted=${inserted} skipped(dupes)=${skipped}`);
+    console.log(
+      `[ingest] scraped=${scraped}, within-day-dupes=${withinDayDupes}, cross-digest-dupes=${crossDigestDupes}, inserted=${inserted}`,
+    );
     console.log(
       `[ingest] sample handles: ${sampleHandles.map((h) => `@${h}`).join(", ") || "(none)"}`,
     );

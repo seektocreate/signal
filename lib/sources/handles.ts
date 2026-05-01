@@ -1,6 +1,12 @@
 // Signal v1 source list. ~50 handles spanning frontier-lab founders/researchers,
 // AI Twitter commentators, tech VCs and operators, podcasters, and product/
 // engineering voices. Edit this file to change Signal's coverage.
+//
+// Coverage window: the ingest job pulls tweets posted in the last 72 hours from
+// these handles (see scripts/ingest.ts WINDOW_HOURS). A digest therefore
+// represents "the last three days of activity" from this list, not strictly
+// "yesterday." Cross-digest dedup in the ingest script prevents the same tweet
+// from appearing in multiple consecutive digests.
 
 export const SIGNAL_HANDLES = [
   "sama",
