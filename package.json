@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "scrape": "tsx --env-file=.env.local scripts/ingest.ts",
     "scout": "tsx --env-file=.env.local scripts/scout.ts",
-    "theme": "tsx --env-file=.env.local scripts/theme.ts"
+    "theme": "tsx --env-file=.env.local scripts/theme.ts",
+    "writer": "tsx --env-file=.env.local scripts/writer.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",
