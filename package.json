@@ -8,9 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "scrape": "tsx --env-file=.env.local scripts/ingest.ts"
+    "scrape": "tsx --env-file=.env.local scripts/ingest.ts",
+    "scout": "tsx --env-file=.env.local scripts/scout.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.92.0",
     "@supabase/supabase-js": "^2.105.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

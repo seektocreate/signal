@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db/types";
 import { scrapeListTweets } from "@/lib/scrapers/apify";
 import { SIGNAL_HANDLES } from "@/lib/sources/handles";
+import { todayInPT } from "@/lib/util/date";
 
 // 1000 across ~52 handles ≈ 19/handle for a 24h window. The wrapper runs the
 // actor once per handle and divides maxItems evenly.
@@ -18,15 +19,6 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   auth: { persistSession: false },
 });
-
-function todayInPT(): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Los_Angeles",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
-}
 
 async function main() {
   const today = todayInPT();
