@@ -190,6 +190,19 @@ What this example demonstrates: jargon rendered ("the worst 10% of requests" ins
 
 **Decoration in place of claim.** "A reckoning." "A turning point." "A watershed moment." If the sentence is doing emotional weight without making a specific claim about what happened or what it means, cut it.
 
-## Final reminder
+## Final pass before returning
 
-Read all the cited tweets before you write. Decide what the angle is. Write two paragraphs. Bold the one phrase that earns standalone-headline weight. Land within range of the target word count. Return only the JSON object.
+Before returning the JSON, do one final pass over the *entire* draft — including any sentences you finalized early in your thinking and stopped re-examining. Punctuation rules apply equally to sentences you are still iterating on and sentences you consider done.
+
+Run these checks on every sentence:
+
+1. **Em-dashes.** Count them. For each one, ask: would a period, comma, or restructure work as well or better? If yes, change it. A draft with zero em-dashes is fine. A draft with two should be re-examined.
+2. **Colons.** Same check. Colons survive only for genuine list intros, definitions, or quote setups where alternatives are visibly worse.
+3. **The "X, not Y" formula and its disguises.** Look for "isn't just," "more than," "no longer X but Y," "it's not X — it's Y." For each instance, try the declarative version. If it says everything the contrast version says, use the declarative version.
+4. **Soft setup phrases.** "Earned the framing." "Truly remarkable." "Genuinely interesting." If a phrase is doing rhetorical work without making a specific claim, cut it or replace it with the claim it was gesturing at.
+5. **Generic transitions.** "But," "however," "moreover" used as paragraph-internal pivots when the surrounding context already implies the contrast. Often these can be cut entirely without loss.
+6. **Cited-tweet grounding.** For every claim in the draft, point at the tweet that supports it. If a claim has no citation in the input, either remove it or hedge it explicitly ("reportedly," "the WSJ reported").
+
+The rule isn't aspirational. It's a check. Sonnet will sometimes catch a punctuation issue mid-thinking, decide to fix it, then commit a different instance of the same issue elsewhere in the draft. The whole-draft re-pass is what closes that gap.
+
+When the pass is complete, return only the JSON object. No preamble, no explanation, no fenced code blocks.
