@@ -64,13 +64,13 @@ Monospace for anything that should read as machine-generated or fixed-width: arc
 
 ### Spacing — three buckets
 
-The system intentionally has three values. If a layout needs a fourth, it usually means a component should be moved between buckets, not that a new bucket is needed.
+The system intentionally has three values. If a layout needs a fourth, it usually means a component should be moved between buckets, not that a new bucket is needed. The `--spacing-*` namespace (not `--space-*`) is required for Tailwind v4 to auto-generate utility classes like `p-tight`, `gap-default`, `mt-section`.
 
 | Token | Value | Use |
 |-------|-------|-----|
-| `--space-tight` | `8px` | Within an element — icon↔label, tag padding, table row padding |
-| `--space-default` | `24px` | Between elements — paragraph gap, card padding, list-row vertical gap |
-| `--space-section` | `64px` | Between page regions — header↔body, theme↔theme on `/today` |
+| `--spacing-tight` | `8px` | Within an element — icon↔label, tag padding, table row padding |
+| `--spacing-default` | `24px` | Between elements — paragraph gap, card padding, list-row vertical gap |
+| `--spacing-section` | `64px` | Between page regions — header↔body, theme↔theme on `/today` |
 
 ### Border radius
 
@@ -95,21 +95,25 @@ The `/today` digest is the canonical reading surface. Prose obeys a measure cons
 - **Display headlines**: may break out to `80ch` for a wider thesis line; the body underneath returns to 65ch.
 - **Below 720px viewport**: prose is full-width minus 24px gutters.
 - **Body size on `/today`**: 18px body-lg with line-height 1.6. The email render uses 16px body to suit smaller mail clients.
-- **Paragraph spacing**: `--space-default` (24px) between paragraphs; `--space-section` (64px) between themes.
+- **Paragraph spacing**: `--spacing-default` (24px) between paragraphs; `--spacing-section` (64px) between themes.
 
 The reading-column rule does NOT apply to the Editorial Room — that surface is data-dense and uses full-width layouts. See *Editorial Room density* below.
 
-## Blockquote treatment
+## Citations & blockquotes
 
-Cited tweets are central to Signal's voice. Two patterns:
+Citations are central to Signal's voice. The pattern is **footer, not inline** — Editor's prose names authors as plain text ("Sam Altman," "Lenny Rachitsky," "Theo"), the way a publication writes; below each theme, a citation strip lists the cited tweets as `@handle` links. Inlining handles inside prose has been ruled out: it reads as engineering, not editorial.
 
-**Inline citation** — the default. Prose runs as normal Inter body; the cited handle appears as `@handle` in `--color-citation` with underline, linking to the original tweet. No special block, no quotation marks.
+**Per-theme citation footer** — the canonical citation surface on `/today`:
 
-**Pull quote** — used sparingly, for the one quote in a theme that carries thesis weight:
+- Inter 400 caption (12px), `--color-gravel`. `--spacing-default` (24px) above the strip; no eyebrow, no "Citations:" lead-in.
+- Handles joined by middle-dot (`·`); each in `--color-citation` underlined (`text-underline-offset: 2px`), linking to its cited tweet's URL.
+- Source: `theme_citations` joined to `tweets`, ordered by `theme_citations.position` ascending, no role filter. Same-author repeats render as repeated handles — de-duping is an open question.
+
+**Pull quote** — used sparingly, for the rare quote that carries thesis weight on its own:
 
 - Fraunces 300 italic at body-lg (18px)
 - Left rule: 2px solid `--color-chalk`, 16px left padding (the only "rule" in the system)
-- Attribution below the quote: Inter 400 caption (12px), `--color-gravel`, prefix `— `, `@handle` underlined and colored `--color-citation`
+- Attribution below the quote: Inter 400 caption (12px), `--color-gravel`, prefix `— `, `@handle` underlined and colored `--color-citation` (the one place a `@handle` may appear *near* prose rather than in the per-theme footer).
 - **No quotation marks rendered** — the typography carries the quote signal. Typed quotation marks duplicate what the rule and the italic already say.
 
 ```
@@ -129,7 +133,7 @@ Background `--color-obsidian`, text `--color-eggshell`, `--radius-pill`, padding
 Background `--color-eggshell`, text `--color-obsidian`, `--radius-pill`, padding `0 12px`, border `1px solid --color-chalk`. Inter 500 14px. Secondary actions — "Read archive," "Open editorial room."
 
 ### Section eyebrow label
-Inter 400 14px `--color-gravel`. Placed `--space-tight` (8px) above a Fraunces heading. Communicates category — "Theme 3," "Today's signal" — without visual decoration.
+Inter 400 14px `--color-gravel`. Placed `--spacing-tight` (8px) above a Fraunces heading. Communicates category — "Theme 3," "Today's signal" — without visual decoration.
 
 ### Archive row
 See *Archive list pattern* below.
@@ -138,7 +142,7 @@ See *Archive list pattern* below.
 `--radius-pill`, padding `4px 8px`, Inter 500 12px, fill `--color-powder`, text `--color-obsidian`. **Color does not encode severity** — the number is the signal. A 4 and an 8 use the same chip; the contrast comes from the digit, the issue list beside it, and the reader's calibrated rubric. (UI mirrors the prompt's anti-safe-middle discipline.)
 
 ### Citation link
-Inline `@handle` rendered in `--color-citation` with `text-decoration: underline`, `text-underline-offset: 2px`. No hover background, no transition; the underline carries it. Used in body prose and pull-quote attributions.
+`@handle` rendered in `--color-citation` with `text-decoration: underline`, `text-underline-offset: 2px`. No hover background, no transition; the underline carries it. Used in the per-theme citation footer (the canonical case) and in pull-quote attributions. **Not used inline in body prose** — Editor names authors as plain text and the citation footer carries the links. See *Citations & blockquotes*.
 
 ## Archive list pattern
 
@@ -149,7 +153,7 @@ Each row:
 - **Theme titles** in Inter 500 16px `--color-obsidian`, joined by a middle-dot separator (`·`)
 - **Dek** (optional, one line) in Inter 400 14px `--color-gravel`, below the titles
 - **Row separator**: 1px `--color-chalk` between rows
-- **Vertical padding**: `--space-default` (24px) per row
+- **Vertical padding**: `--spacing-default` (24px) per row
 
 ```
 2026-04-30  Coding agents harness · Cyber capability · Musk v. Altman · Pipes
@@ -167,7 +171,7 @@ The `--color-chalk` rule between rows is the only horizontal element on the page
 
 - **Body size**: 14px (caption-adjacent), line-height 1.5. Down from 18px on `/today`.
 - **Code & JSON**: JetBrains Mono 13px, `--color-powder` fill, `--shadow-hairline`, `--radius-card`. Used for any model output dump or input payload.
-- **Tabular rows**: `--space-tight` (8px) padding, `--color-chalk` row dividers. No striping.
+- **Tabular rows**: `--spacing-tight` (8px) padding, `--color-chalk` row dividers. No striping.
 - **Score chips**: as defined under *Components* — neutral fill, the digit carries the signal, no green/red severity color.
 - **Layout**: full-width, side-by-side input/output panes are correct here. The 65ch reading-column rule is intentionally suspended.
 - **Eyebrow labels**: scaled down to 12px `--color-gravel` to suit the denser ladder.
@@ -191,6 +195,8 @@ The view is dense by design. Two surfaces, two density modes — `/today` is for
 - Don't render quotation marks in pull quotes. The italic Fraunces and the left rule already say "quote."
 - Don't add a hover background to archive rows. The list is a printed index.
 - Don't use `--color-citation` (the blue) for anything other than `@handle` citation links — not for buttons, not for primary actions, not for emphasis.
+- Don't auto-link author names ("Sam Altman," "Theo") inside body prose. Editor names people the way a publication does; the citation footer carries the links.
+- Don't rename the `--spacing-*` tokens to `--space-*`. Tailwind v4 generates utility classes only from the `--spacing-*` namespace.
 
 ## Surfaces
 
@@ -236,9 +242,9 @@ Hairline only. `--shadow-hairline` is the default for any element that needs to 
   --weight-medium:  500;
 
   /* Spacing — three buckets */
-  --space-tight:   8px;
-  --space-default: 24px;
-  --space-section: 64px;
+  --spacing-tight:   8px;
+  --spacing-default: 24px;
+  --spacing-section: 64px;
 
   /* Border radius */
   --radius-input: 4px;
@@ -279,9 +285,9 @@ Hairline only. `--shadow-hairline` is the default for any element that needs to 
   --text-heading: 24px;
   --text-display: 40px;
 
-  --space-tight:   8px;
-  --space-default: 24px;
-  --space-section: 64px;
+  --spacing-tight:   8px;
+  --spacing-default: 24px;
+  --spacing-section: 64px;
 
   --radius-input: 4px;
   --radius-card:  16px;
