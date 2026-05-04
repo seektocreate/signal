@@ -478,6 +478,7 @@ async function main() {
       .from("digests")
       .update({
         status: "complete",
+        completed_at: new Date().toISOString(),
         total_input_tokens: newInputTotal,
         total_output_tokens: newOutputTotal,
         total_cost_cents: newCostTotal,
