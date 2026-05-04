@@ -15,11 +15,22 @@ function formatDigestDate(isoDate: string): string {
 }
 
 function CitationFooter({ citations }: { citations: CitationView[] }) {
-  if (citations.length === 0) return null;
+  // De-dupe by author_handle, preserving first occurrence by
+  // theme_citations.position. Each unique handle links to the URL of its
+  // first cited tweet. No count annotation, no cap — single-author themes
+  // (e.g. trial coverage) correctly shrink to one handle.
+  const seen = new Set<string>();
+  const unique: CitationView[] = [];
+  for (const c of citations) {
+    if (seen.has(c.author_handle)) continue;
+    seen.add(c.author_handle);
+    unique.push(c);
+  }
+  if (unique.length === 0) return null;
   return (
     <p className="mt-default text-caption leading-[1.4] text-gravel">
-      {citations.map((c, i) => (
-        <span key={c.position}>
+      {unique.map((c, i) => (
+        <span key={c.author_handle}>
           {i > 0 && <span aria-hidden="true"> · </span>}
           <a
             href={c.url}
