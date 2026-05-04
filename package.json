@@ -12,7 +12,8 @@
     "scout": "tsx --env-file=.env.local scripts/scout.ts",
     "theme": "tsx --env-file=.env.local scripts/theme.ts",
     "writer": "tsx --env-file=.env.local scripts/writer.ts",
-    "editor": "tsx --env-file=.env.local scripts/editor.ts"
+    "editor": "tsx --env-file=.env.local scripts/editor.ts",
+    "eval": "tsx --env-file=.env.local scripts/eval.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",
