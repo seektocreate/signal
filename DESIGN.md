@@ -183,6 +183,29 @@ The `--color-chalk` rule between rows is the only horizontal element on the page
 
 The view is dense by design. Two surfaces, two density modes — `/today` is for savoring, the Editorial Room is for scanning.
 
+## Editorial Room mobile addendum
+
+Below 768px, the Editorial Room gains a few responsive accommodations rather than a wholesale redesign. The transparency surface stays a transparency surface — the changes preserve scannability and HIG-conformant tap targets without softening the density rules above.
+
+- **Breakpoint**: Tailwind v4's named `md` (768px). Distinct from `/today`'s 720px prose-gutter rule — `/today` and the Editorial Room are different surfaces with different breaking points, and we don't conflate them.
+- **Touch-target floor**: `.tap-target` (`padding: 16px; margin: -16px`) lifts interactive hit areas to ≥44×44 without changing visual size — the invisible-padding pattern. Applied to the JsonToggle button, AnchorNav links, and `@handle` citation anchors inside the Editorial Room. **Not applied to `/today` citations** — `/today` is a reading surface where the underline alone is enough; tap-target is an Editorial Room concession to its denser interactive ladder.
+- **Fade-right affordance**: `.fade-right` is a 32px right-edge `mask-image` gradient signaling "this container scrolls horizontally." Always-on for raw-JSON `<pre>` blocks (long IDs and URLs overflow at any viewport). `.fade-right-mobile` (the same mask, scoped to `@media (max-width: 767px)`) on AnchorNav and the Pipeline table wrapper — the scroll exists only on mobile, so the affordance only appears there.
+- **AnchorNav**: `overflow-x: auto` on the inner wrapper; items `shrink-0` so flex doesn't truncate labels; fade-right-mobile on the right edge. The user pans to reach `Pipeline` — the same gesture as the Pipeline table itself, which makes the page consistent.
+- **Pipeline sticky first column**: `position: sticky; left: 0; z-index: 1; background: var(--color-eggshell); border-right: 1px solid var(--color-chalk)` on the first `<th>` and the first `<td>` of every row, including the totals row. The opaque eggshell background hides scrolling cells passing underneath; the chalk hairline is the same divider used elsewhere on the page. **Use `z-index: 1`, not higher** — the AnchorNav is `z-10` and must win when both are at the same scroll position.
+- **Scout card-per-row layout**: below 768px, both Scout tables (main 5-col + "Kept but unthemed" 4-col) collapse to stacked card lists. Dual-render: the existing `<table>` keeps `hidden md:block`, a parallel `<ul>` of `<li>` cards gets `block md:hidden`. Same source data array iterated twice — no data duplication, only one layout visible at a time. **Card shape**: handle (left, citation-blue) and score (right, monospace) on row 1; full text on row 2; state · reason on row 3. Hairline `--color-chalk` between cards, `--spacing-tight` per card.
+
+### Three accepted-as-v0 mobile patterns
+
+Surfaced by the audit and explicitly preserved rather than fixed:
+
+- **Header sub-row wrap**: `status / runs / cost / tokens` wraps to two lines below ~390px. The wrap is honest at narrow viewport — leave it.
+- **Raw-JSON horizontal scroll**: long string values (UUIDs, `x_tweet_id`s, URLs) get clipped at the right edge of `<pre>` blocks. The fade-right affordance signals scrollability; the horizontal-scroll behavior matches developer-tool JSON viewer conventions.
+- **Date headline width**: the monospace `YYYY-MM-DD` headline takes ~280px of the 342px content area at 390×844. It reads as headline-heavy framing, appropriate for a date-anchored page.
+
+### Implementation note — Tailwind v4 + Turbopack
+
+Custom utilities defined via Tailwind v4's `@utility` directive (which composes with variants like `max-md:`) silently dropped from Turbopack's compiled CSS in this project's stack. Using `@layer utilities` for always-on classes (`.tap-target`, `.fade-right`) plus an explicit `@media (max-width: 767px)` block for `.fade-right-mobile` is the working fallback. If `@utility` variant compilation lands cleanly in a future Turbopack/Tailwind version, the `.fade-right-mobile` class can be retired in favor of `max-md:fade-right`.
+
 ## Do's and Don'ts
 
 ### Do
