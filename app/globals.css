@@ -11,6 +11,8 @@
   --color-cinder:   #575347;
   --color-obsidian: #000000;
   --color-citation: #0447ff;
+  --color-diff-removed: #cf222e;
+  --color-diff-added:   #1a7f37;
 
   /* Typography */
   --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;

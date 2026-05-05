@@ -15,14 +15,14 @@ export function DiffView({
       {diffs.map(([op, text], i) => {
         if (op === diff_match_patch.DIFF_DELETE) {
           return (
-            <span key={i} className="text-fog line-through">
+            <span key={i} className="font-bold text-diff-removed line-through">
               {text}
             </span>
           );
         }
         if (op === diff_match_patch.DIFF_INSERT) {
           return (
-            <span key={i} className="text-cinder underline underline-offset-2">
+            <span key={i} className="font-bold text-diff-added underline underline-offset-2">
               {text}
             </span>
           );

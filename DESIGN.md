@@ -18,7 +18,9 @@ Near-monochrome on a warm eggshell ground. The only chromatic accent is `--color
 | `--color-gravel` | `#777169` | Secondary body text — eyebrows, captions, dek |
 | `--color-cinder` | `#575347` | Mid-tone text — secondary headings on light surfaces |
 | `--color-obsidian` | `#000000` | Primary text, CTA fill |
-| `--color-citation` | `#0447ff` | `@handle` link color — used nowhere else |
+| `--color-citation` | `#0447ff` | `@handle` link color |
+| `--color-diff-removed` | `#cf222e` | Editorial Room diff: removed text |
+| `--color-diff-added` | `#1a7f37` | Editorial Room diff: added text |
 
 > **Cinder note**: this value supersedes a `#57534` (5-character) typo in earlier drafts. The corrected `#575347` keeps the warm-stone family of `--color-gravel` and `--color-slate`.
 
@@ -37,9 +39,9 @@ Variable serif (weights 100–900, optical-size axis 9–144). Designed for edit
 
 ### Inter — body, UI, captions
 
-Sans-serif workhorse. Weight 400 for body and dek, weight 500 for interactive labels and emphasis. The neutral sans is the right counterpart to a distinctive serif — the serif carries the voice, the sans carries the legibility. `--font-sans`
+Sans-serif workhorse. Weight 400 for body and dek, weight 500 for interactive labels and emphasis, weight 700 reserved for the Editorial Room diff (the only place a true bold sans appears). The neutral sans is the right counterpart to a distinctive serif — the serif carries the voice, the sans carries the legibility. `--font-sans`
 
-- **Weights:** 400, 500
+- **Weights:** 400, 500, 700
 - **Sizes:** 12px caption, 16px body, 18px body-lg
 - **OpenType features:** `"kern" 1`
 
@@ -145,7 +147,7 @@ See *Archive list pattern* below.
 `@handle` rendered in `--color-citation` with `text-decoration: underline`, `text-underline-offset: 2px`. No hover background, no transition; the underline carries it. Used in the per-theme citation footer (the canonical case) and in pull-quote attributions. **Not used inline in body prose** — Editor names authors as plain text and the citation footer carries the links. See *Citations & blockquotes*.
 
 ### Diff rendering (Editorial Room)
-Inline word-level diff between Writer and Editor drafts in the Drafts section. Removed text uses `--color-fog` with `text-decoration: line-through`; added text uses `--color-cinder` with `text-decoration: underline`, `text-underline-offset: 2px`; unchanged text in body color. Computed server-side via `diff-match-patch` with `diff_cleanupSemantic` for word/phrase-level chunks rather than character noise.
+Inline word-level diff between Writer and Editor drafts in the Drafts section. Removed text uses `--color-diff-removed` at Inter 700 with `text-decoration: line-through`; added text uses `--color-diff-added` at Inter 700 with `text-decoration: underline`, `text-underline-offset: 2px`; unchanged text in body color at the inherited weight. Saturated red/green is the right call here — the diff is the explicit code-review-style chromatic exception within an otherwise near-monochrome system. Computed server-side via `diff-match-patch` with `diff_cleanupSemantic` for word/phrase-level chunks rather than character noise.
 
 ## Archive list pattern
 
@@ -185,7 +187,7 @@ The view is dense by design. Two surfaces, two density modes — `/today` is for
 
 ### Do
 - Use Fraunces 300 (light) for every heading and display — never reach for a heavier weight to "make it pop."
-- Hold the entire palette near zero saturation. The only chromatic ink is `--color-citation` on `@handle` links.
+- Hold the rest of the palette near zero saturation. Chromatic ink is reserved for: `--color-citation` on `@handle` links, and `--color-diff-removed` / `--color-diff-added` on the Editorial Room diff. The diff tokens are saturated by design — they have to read as code-review color across paragraphs of unchanged prose; muted versions don't carry the load.
 - Apply `--shadow-hairline` (inset 0.5px) to cards and code blocks instead of a literal border.
 - Keep prose at the 65ch measure on `/today`. If it feels narrow on a wide monitor, that is the point.
 - Use JetBrains Mono only where content is fixed-width by nature: dates, code, model output, machine annotations.
@@ -197,7 +199,7 @@ The view is dense by design. Two surfaces, two density modes — `/today` is for
 - Don't apply `--shadow-float` to anything in the reading view. It is reserved for modals.
 - Don't render quotation marks in pull quotes. The italic Fraunces and the left rule already say "quote."
 - Don't add a hover background to archive rows. The list is a printed index.
-- Don't use `--color-citation` (the blue) for anything other than `@handle` citation links — not for buttons, not for primary actions, not for emphasis.
+- Don't use `--color-citation` (the blue) for anything other than `@handle` citation links — not for buttons, not for primary actions, not for emphasis. Don't use `--color-diff-removed` or `--color-diff-added` outside the Editorial Room diff.
 - Don't auto-link author names ("Sam Altman," "Theo") inside body prose. Editor names people the way a publication does; the citation footer carries the links.
 - Don't rename the `--spacing-*` tokens to `--space-*`. Tailwind v4 generates utility classes only from the `--spacing-*` namespace.
 
@@ -228,6 +230,8 @@ Hairline only. `--shadow-hairline` is the default for any element that needs to 
   --color-cinder:   #575347;
   --color-obsidian: #000000;
   --color-citation: #0447ff;
+  --color-diff-removed: #cf222e;
+  --color-diff-added:   #1a7f37;
 
   /* Typography */
   --font-serif: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
@@ -277,6 +281,8 @@ Hairline only. `--shadow-hairline` is the default for any element that needs to 
   --color-cinder:   #575347;
   --color-obsidian: #000000;
   --color-citation: #0447ff;
+  --color-diff-removed: #cf222e;
+  --color-diff-added:   #1a7f37;
 
   --font-serif: 'Fraunces', ui-serif, Georgia, serif;
   --font-sans:  'Inter', ui-sans-serif, system-ui, sans-serif;
