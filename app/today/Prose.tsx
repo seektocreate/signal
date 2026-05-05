@@ -23,11 +23,21 @@ function renderInline(text: string) {
   });
 }
 
-export function Prose({ source }: { source: string }) {
+export function Prose({
+  source,
+  size = "lg",
+}: {
+  source: string;
+  size?: "lg" | "sm";
+}) {
   warnIfUnexpectedMarkdown(source);
   const paragraphs = source.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+  const sizing =
+    size === "sm"
+      ? "text-[14px] leading-[1.5]"
+      : "text-body-lg leading-[1.6]";
   return (
-    <div className="space-y-default text-body-lg leading-[1.6]">
+    <div className={`space-y-default ${sizing}`}>
       {paragraphs.map((p, i) => (
         <p key={i}>{renderInline(p)}</p>
       ))}
