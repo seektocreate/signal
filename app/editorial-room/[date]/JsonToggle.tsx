@@ -18,13 +18,13 @@ export function JsonToggle({
         <button
           type="button"
           onClick={() => setShowRaw((v) => !v)}
-          className="translate-y-[1px] text-caption leading-none text-gravel underline underline-offset-2 hover:text-obsidian"
+          className="tap-target translate-y-[1px] text-caption leading-none text-gravel underline underline-offset-2 hover:text-obsidian"
         >
           {showRaw ? "Show structured" : "Show raw"}
         </button>
       </div>
       {showRaw ? (
-        <pre className="max-h-[600px] overflow-auto whitespace-pre rounded-card bg-powder p-default font-mono text-[13px] leading-[1.5] text-cinder shadow-hairline">
+        <pre className="fade-right max-h-[600px] overflow-auto whitespace-pre rounded-card bg-powder p-default font-mono text-[13px] leading-[1.5] text-cinder shadow-hairline">
           {JSON.stringify(rawJson, null, 2)}
         </pre>
       ) : (

@@ -11,10 +11,53 @@ function HandleCell({ tweet }: { tweet: EditorialRoomTweet }) {
       href={tweet.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-citation underline underline-offset-2"
+      className="tap-target text-citation underline underline-offset-2"
     >
       @{tweet.author_handle}
     </a>
+  );
+}
+
+function ScoutCard({ tweet }: { tweet: EditorialRoomTweet }) {
+  const kept = tweet.scout.kept;
+  return (
+    <li className="space-y-tight border-b border-chalk py-tight">
+      <div className="flex items-baseline justify-between gap-default">
+        <HandleCell tweet={tweet} />
+        <span className="font-mono text-[13px] text-cinder tabular-nums">
+          {tweet.scout.score === null ? "—" : tweet.scout.score.toFixed(2)}
+        </span>
+      </div>
+      <p className="text-[14px] text-cinder">{tweet.text}</p>
+      <p className="text-[14px] text-gravel">
+        <span>
+          {kept === true ? "kept" : kept === false ? "dropped" : "—"}
+        </span>
+        {tweet.scout.reason && (
+          <>
+            <span className="px-tight" aria-hidden="true">·</span>
+            <span>{tweet.scout.reason}</span>
+          </>
+        )}
+      </p>
+    </li>
+  );
+}
+
+function UnthemedCard({ tweet }: { tweet: EditorialRoomTweet }) {
+  return (
+    <li className="space-y-tight border-b border-chalk py-tight">
+      <div className="flex items-baseline justify-between gap-default">
+        <HandleCell tweet={tweet} />
+        <span className="font-mono text-[13px] text-cinder tabular-nums">
+          {tweet.scout.score === null ? "—" : tweet.scout.score.toFixed(2)}
+        </span>
+      </div>
+      <p className="text-[14px] text-cinder">{tweet.text}</p>
+      {tweet.scout.reason && (
+        <p className="text-[14px] text-gravel">{tweet.scout.reason}</p>
+      )}
+    </li>
   );
 }
 
@@ -75,7 +118,7 @@ export function ScoutSection({ data }: { data: EditorialRoomViewModel }) {
         {unknown > 0 ? ` · ${unknown} unscored` : ""}
       </p>
 
-      <div className="overflow-x-auto">
+      <div className="hidden overflow-x-auto md:block">
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b border-chalk text-left">
@@ -93,6 +136,11 @@ export function ScoutSection({ data }: { data: EditorialRoomViewModel }) {
           </tbody>
         </table>
       </div>
+      <ul className="block border-t border-chalk md:hidden">
+        {data.tweets.map((t) => (
+          <ScoutCard key={t.id} tweet={t} />
+        ))}
+      </ul>
 
       {data.unthemed_kept_tweets.length > 0 && (
         <div className="space-y-tight pt-default">
@@ -102,7 +150,7 @@ export function ScoutSection({ data }: { data: EditorialRoomViewModel }) {
           <p className="text-caption text-gravel">
             Tweets Scout kept that the Theme agent did not cluster into any theme.
           </p>
-          <div className="overflow-x-auto pt-tight">
+          <div className="hidden overflow-x-auto pt-tight md:block">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b border-chalk text-left">
@@ -119,6 +167,11 @@ export function ScoutSection({ data }: { data: EditorialRoomViewModel }) {
               </tbody>
             </table>
           </div>
+          <ul className="block border-t border-chalk md:hidden">
+            {data.unthemed_kept_tweets.map((t) => (
+              <UnthemedCard key={t.id} tweet={t} />
+            ))}
+          </ul>
         </div>
       )}
     </section>

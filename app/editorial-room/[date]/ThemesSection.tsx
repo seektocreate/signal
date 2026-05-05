@@ -19,7 +19,7 @@ function CitationRow({ citation }: { citation: EditorialRoomCitation }) {
           href={citation.tweet.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-citation underline underline-offset-2"
+          className="tap-target text-citation underline underline-offset-2"
         >
           @{citation.tweet.author_handle}
         </a>

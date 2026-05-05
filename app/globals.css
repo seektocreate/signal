@@ -55,3 +55,24 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+@layer utilities {
+  .tap-target {
+    padding: 16px;
+    margin: -16px;
+  }
+
+  .fade-right {
+    mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+  }
+
+  /* Mobile-only fade — Tailwind v4 variants don't compose onto @layer utilities classes,
+     so this is the explicit-media-query equivalent of max-md:fade-right. */
+  @media (max-width: 767px) {
+    .fade-right-mobile {
+      mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+    }
+  }
+}

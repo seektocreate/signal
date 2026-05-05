@@ -10,7 +10,7 @@ const COST_GAP_THRESHOLD_CENTS = 0.01;
 function StageRow({ stage }: { stage: EditorialRoomStageMetrics }) {
   return (
     <tr className="border-b border-chalk align-top">
-      <td className="px-tight py-tight text-[14px] text-obsidian">{stage.agent}</td>
+      <td className="sticky left-0 z-[1] border-r border-chalk bg-eggshell px-tight py-tight text-[14px] text-obsidian">{stage.agent}</td>
       <td className="px-tight py-tight font-mono text-[13px] text-cinder">
         {stage.models.join(", ")}
       </td>
@@ -49,11 +49,11 @@ export function PipelineSection({ data }: { data: EditorialRoomViewModel }) {
 
   return (
     <section id="pipeline" style={SCROLL_OFFSET} className="space-y-default">
-      <div className="overflow-x-auto">
+      <div className="fade-right-mobile overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b border-chalk text-left">
-              <th className="px-tight py-tight text-caption font-medium text-gravel">Stage</th>
+              <th className="sticky left-0 z-[1] border-r border-chalk bg-eggshell px-tight py-tight text-caption font-medium text-gravel">Stage</th>
               <th className="px-tight py-tight text-caption font-medium text-gravel">Models</th>
               <th className="px-tight py-tight text-right text-caption font-medium text-gravel">Runs</th>
               <th className="px-tight py-tight text-right text-caption font-medium text-gravel">Failed</th>
@@ -70,7 +70,7 @@ export function PipelineSection({ data }: { data: EditorialRoomViewModel }) {
               <StageRow key={s.agent} stage={s} />
             ))}
             <tr className="align-top">
-              <td className="px-tight py-tight text-[14px] font-medium text-obsidian">total</td>
+              <td className="sticky left-0 z-[1] border-r border-chalk bg-eggshell px-tight py-tight text-[14px] font-medium text-obsidian">total</td>
               <td className="px-tight py-tight font-mono text-[13px] text-cinder">—</td>
               <td className="px-tight py-tight text-right font-mono text-[13px] text-obsidian tabular-nums">
                 {runs.total_runs}
