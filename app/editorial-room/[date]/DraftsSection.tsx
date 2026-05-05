@@ -3,6 +3,7 @@ import type {
   EditorialRoomTheme,
   EditorialRoomViewModel,
 } from "@/lib/editorial-room";
+import { DiffView } from "./DiffView";
 
 const SCROLL_OFFSET = { scrollMarginTop: "56px" } as const;
 
@@ -22,14 +23,12 @@ function DraftBlock({ theme }: { theme: EditorialRoomTheme }) {
     <article className="space-y-default">
       <div className="space-y-tight">
         <p className="text-caption text-gravel">
-          Theme {theme.position} — Writer draft
+          Theme {theme.position} — Editor&apos;s edit
         </p>
-        <Prose source={theme.writer_draft} size="sm" />
+        <DiffView writer={theme.writer_draft} editor={theme.editor_final} />
       </div>
       <div className="space-y-tight">
-        <p className="text-caption text-gravel">
-          Theme {theme.position} — Editor final
-        </p>
+        <p className="text-caption text-gravel">Final</p>
         <Prose source={theme.editor_final} size="sm" />
       </div>
     </article>

@@ -124,7 +124,7 @@ Citations are central to Signal's voice. The pattern is **footer, not inline** â
 
 ## Components
 
-Six components, all that Signal needs.
+Seven components, all that Signal needs.
 
 ### Primary pill button (filled)
 Background `--color-obsidian`, text `--color-eggshell`, `--radius-pill`, padding `0 16px`, height driven by line-height. Inter 500 14px. Subscribe / Send digest. One per visual cluster.
@@ -143,6 +143,9 @@ See *Archive list pattern* below.
 
 ### Citation link
 `@handle` rendered in `--color-citation` with `text-decoration: underline`, `text-underline-offset: 2px`. No hover background, no transition; the underline carries it. Used in the per-theme citation footer (the canonical case) and in pull-quote attributions. **Not used inline in body prose** â€” Editor names authors as plain text and the citation footer carries the links. See *Citations & blockquotes*.
+
+### Diff rendering (Editorial Room)
+Inline word-level diff between Writer and Editor drafts in the Drafts section. Removed text uses `--color-fog` with `text-decoration: line-through`; added text uses `--color-cinder` with `text-decoration: underline`, `text-underline-offset: 2px`; unchanged text in body color. Computed server-side via `diff-match-patch` with `diff_cleanupSemantic` for word/phrase-level chunks rather than character noise.
 
 ## Archive list pattern
 
