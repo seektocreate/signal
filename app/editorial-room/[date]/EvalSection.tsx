@@ -52,15 +52,8 @@ function DimensionRow({ dim }: { dim: EditorialRoomEvalDimension }) {
 }
 
 export function EvalSection({ data }: { data: EditorialRoomViewModel }) {
-  const runOf = data.eval.run_index + 1;
-  const totalRuns = data.eval.total_runs;
   return (
     <section id="eval" style={SCROLL_OFFSET} className="space-y-default">
-      <div>
-        <p className="mb-tight text-caption text-gravel">
-          Eval — Run {runOf} of {totalRuns}
-        </p>
-      </div>
       <div>
         {data.eval.dimensions.map((d) => (
           <DimensionRow key={d.dimension} dim={d} />

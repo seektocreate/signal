@@ -70,13 +70,10 @@ export function ScoutSection({ data }: { data: EditorialRoomViewModel }) {
 
   return (
     <section id="scout" style={SCROLL_OFFSET} className="space-y-default">
-      <div>
-        <p className="mb-tight text-caption text-gravel">Scout decisions</p>
-        <p className="text-caption text-gravel tabular-nums">
-          {total.toLocaleString("en-US")} ingested · {kept} kept · {dropped} dropped
-          {unknown > 0 ? ` · ${unknown} unscored` : ""}
-        </p>
-      </div>
+      <p className="text-caption text-gravel tabular-nums">
+        {total.toLocaleString("en-US")} ingested · {kept} kept · {dropped} dropped
+        {unknown > 0 ? ` · ${unknown} unscored` : ""}
+      </p>
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">

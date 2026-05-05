@@ -38,11 +38,6 @@ function DraftBlock({ theme }: { theme: EditorialRoomTheme }) {
 export function DraftsSection({ data }: { data: EditorialRoomViewModel }) {
   return (
     <section id="drafts" style={SCROLL_OFFSET} className="space-y-section">
-      <div>
-        <p className="mb-tight text-caption text-gravel">
-          Writer / Editor drafts ({data.themes.length})
-        </p>
-      </div>
       {data.themes.map((t) => (
         <DraftBlock key={t.id} theme={t} />
       ))}

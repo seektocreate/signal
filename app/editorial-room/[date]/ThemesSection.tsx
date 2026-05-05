@@ -61,11 +61,6 @@ function ThemeBlock({ theme }: { theme: EditorialRoomTheme }) {
 export function ThemesSection({ data }: { data: EditorialRoomViewModel }) {
   return (
     <section id="themes" style={SCROLL_OFFSET} className="space-y-section">
-      <div>
-        <p className="mb-tight text-caption text-gravel">
-          Themes ({data.themes.length})
-        </p>
-      </div>
       {data.themes.map((t) => (
         <ThemeBlock key={t.id} theme={t} />
       ))}

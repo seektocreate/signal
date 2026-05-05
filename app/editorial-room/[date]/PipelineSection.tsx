@@ -49,9 +49,6 @@ export function PipelineSection({ data }: { data: EditorialRoomViewModel }) {
 
   return (
     <section id="pipeline" style={SCROLL_OFFSET} className="space-y-default">
-      <div>
-        <p className="mb-tight text-caption text-gravel">Pipeline</p>
-      </div>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
